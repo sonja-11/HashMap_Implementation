@@ -105,6 +105,7 @@ class HashMap:
         hash = self._hash_function(key)
         index = hash % self._capacity
         bucket = self._buckets[index]
+
         for i in bucket:
             if i.key == key:
                 i.value = value
@@ -112,6 +113,7 @@ class HashMap:
 
         bucket.insert(key, value)
         self._size += 1
+
 
     def resize_table(self, new_capacity: int) -> None:
         """
@@ -125,15 +127,15 @@ class HashMap:
         """
         if new_capacity < 1:
             return
-
-        if new_capacity is not self._is_prime(new_capacity):
+        elif self._is_prime(new_capacity) is False:
             new_capacity = self._next_prime(new_capacity)
+
 
         new_table = DynamicArray()
         for i in range(new_capacity):
             new_table.append(LinkedList())
 
-        for i in range(self._capacity):
+        for i in range(self._buckets.length()):
             bucket = self._buckets[i]
             for j in bucket:
                 index = self._hash_function(j.key) % new_capacity
@@ -142,11 +144,12 @@ class HashMap:
         self._buckets = new_table
         self._capacity = new_capacity
 
+
     def table_load(self) -> float:
         """
         Returns the current hash table load factor.
         """
-        return float(self._size / self._capacity)
+        return float(self._size / self._buckets.length())
 
     def empty_buckets(self) -> int:
         """
@@ -184,8 +187,6 @@ class HashMap:
         for i in bucket:
             if i.key == key:
                 return True
-            else:
-                return False
         return False
 
     def remove(self, key: str) -> None:
