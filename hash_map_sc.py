@@ -98,12 +98,12 @@ class HashMap:
         greater than or equal to 1.0.
         """
 
-        load_factor = (self._size + 1) / self._capacity
-        if load_factor >= 1.0:
-            self.resize_table(self._capacity * 2)
+        # load_factor = (self._size + 1) / self._capacity
+        if self.table_load() >= 1.0:
+            self.resize_table(self.get_capacity() * 2)
 
         hash = self._hash_function(key)
-        index = hash % self._capacity
+        index = hash % self.get_capacity()
         bucket = self._buckets[index]
 
         for i in bucket:
@@ -127,15 +127,14 @@ class HashMap:
         """
         if new_capacity < 1:
             return
-        elif self._is_prime(new_capacity) is False:
+        elif not self._is_prime(new_capacity):
             new_capacity = self._next_prime(new_capacity)
-
 
         new_table = DynamicArray()
         for i in range(new_capacity):
             new_table.append(LinkedList())
 
-        for i in range(self._buckets.length()):
+        for i in range(self.get_capacity()):
             bucket = self._buckets[i]
             for j in bucket:
                 index = self._hash_function(j.key) % new_capacity
@@ -149,14 +148,14 @@ class HashMap:
         """
         Returns the current hash table load factor.
         """
-        return float(self._size / self._buckets.length())
+        return float(self.get_size() / self.get_capacity())
 
     def empty_buckets(self) -> int:
         """
         Returns the number of empty buckets in the hash table.
         """
         count = 0
-        for i in range(self._capacity):
+        for i in range(self.get_capacity()):
             if self._buckets[i].length() == 0:
                 count += 1
         return count
@@ -167,7 +166,7 @@ class HashMap:
         map, the method returns None.
         """
         hash = self._hash_function(key)
-        index = hash % self._capacity
+        index = hash % self.get_capacity()
         bucket = self._buckets[index]
 
         if bucket.contains(key) is not None:
@@ -181,7 +180,7 @@ class HashMap:
         empty hash map does not contain any keys.
         """
         hash = self._hash_function(key)
-        index = hash % self._capacity
+        index = hash % self.get_capacity()
         bucket = self._buckets[index]
 
         for i in bucket:
@@ -195,10 +194,10 @@ class HashMap:
         is not in the hash map, the method does nothing (no exception needs to be raised).
         """
         hash = self._hash_function(key)
-        index = hash % self._capacity
+        index = hash % self.get_capacity()
         bucket = self._buckets[index]
 
-        if bucket.remove(key):
+        if bucket.remove(key) is True:
             self._size -= 1
 
     def get_keys_and_values(self) -> DynamicArray:
@@ -207,19 +206,21 @@ class HashMap:
         stored in the hash map. The order of the keys in the dynamic array does not matter.
         """
         list = DynamicArray()
-        for i in range(self._capacity):
+        for i in range(self.get_capacity()):
             bucket = self._buckets.get_at_index(i)
             if bucket is not None:
                 for j in bucket:
                     list.append((j.key, j.value))
         return list
 
+
+
     def clear(self) -> None:
         """
         Clears the contents of the hash map. It does not change the underlying hash
         table capacity.
         """
-        for i in range(self._buckets.length()):
+        for i in range(self.get_capacity()):
             self._buckets[i] = LinkedList()
         self._size = 0
 
