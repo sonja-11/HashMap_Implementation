@@ -97,8 +97,6 @@ class HashMap:
         capacity when this method is called and the current load factor of the table is
         greater than or equal to 1.0.
         """
-
-        # load_factor = (self._size + 1) / self._capacity
         if self.table_load() >= 1.0:
             self.resize_table(self.get_capacity() * 2)
 
@@ -114,7 +112,6 @@ class HashMap:
         bucket.insert(key, value)
         self._size += 1
 
-
     def resize_table(self, new_capacity: int) -> None:
         """
         Changes the capacity of the internal hash table. All existing key/value pairs
@@ -127,7 +124,7 @@ class HashMap:
         """
         if new_capacity < 1:
             return
-        elif not self._is_prime(new_capacity):
+        else:
             new_capacity = self._next_prime(new_capacity)
 
         new_table = DynamicArray()
@@ -142,7 +139,6 @@ class HashMap:
 
         self._buckets = new_table
         self._capacity = new_capacity
-
 
     def table_load(self) -> float:
         """
@@ -213,8 +209,6 @@ class HashMap:
                     list.append((j.key, j.value))
         return list
 
-
-
     def clear(self) -> None:
         """
         Clears the contents of the hash map. It does not change the underlying hash
@@ -239,31 +233,31 @@ def find_mode(da: DynamicArray) -> tuple[DynamicArray, int]:
     results, we recommend using the separate chaining hash map instance provided for you in
     the function’s skeleton code.
     """
-    mode_pos = da[0]
-    present_count = 1
-    max_count = 1
-    mode_max = mode_pos
-    max_count = present_count
-
-    for i in range(1, da.length()):
-        if da[i] == mode_pos:
-            present_count += 1
-        else:
-            mode_pos = da[i]
-            present_count = 1
-        if present_count > max_count:
-            mode_max = mode_pos
-            max_count = present_count
-
-    new_da = DynamicArray()
-    for i in range(da.length()):
-        if da[i] == mode_max:
-            new_da.append(da[i])
-
-    return (new_da, max_count)
-    # if you'd like to use a hash map,
-    # use this instance of your Separate Chaining HashMap
     map = HashMap()
+    # Populate data to the map
+    for i in range(da.length()):
+        element = da.get_at_index(i)
+        if map.contains_key(element):
+            map.put(element, map.get(element) + 1)
+        else:
+            map.put(element, 1)
+
+    # Find the max count in pairs
+    max_freq = 0
+    kv_list = map.get_keys_and_values()
+    for i in range(kv_list.length()):
+        key, value = kv_list[i]
+        if value > max_freq:
+            max_freq = value
+    max_element = DynamicArray()
+
+    # Return result
+    for i in range(kv_list.length()):
+        key, value = kv_list[i]
+        if value == max_freq:
+            max_element.append(key)
+
+    return max_element, max_freq
 
 
 # ------------------- BASIC TESTING ---------------------------------------- #
