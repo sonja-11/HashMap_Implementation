@@ -94,7 +94,6 @@ class HashMap:
         capa city when this method is called and the current load factor of the table is
         greater than or equal to 0.5.
         """
-
         if self.table_load() >= 0.5:
             self.resize_table(self.get_capacity() * 2)
 
@@ -112,6 +111,7 @@ class HashMap:
                 bucket.value = value
                 return
 
+
     def resize_table(self, new_capacity: int) -> None:
         """
         Changes the capacity of the internal hash table. All existing key/value pairs
@@ -127,11 +127,6 @@ class HashMap:
             return
 
         if not self._is_prime(new_capacity):
-            new_capacity = self._next_prime(new_capacity)
-
-        if new_capacity < 1:
-            return
-        elif not self._is_prime(new_capacity):
             new_capacity = self._next_prime(new_capacity)
 
         new_table = DynamicArray()
@@ -159,7 +154,12 @@ class HashMap:
         """
         Returns the number of empty buckets in the hash table.
         """
-        return self.get_capacity() - self.get_size()
+        count = 0
+        for i in range(self.get_capacity()):
+            bucket = self._buckets[i]
+            if bucket is None:
+                count += 1
+        return count
 
     def get(self, key: str) -> object:
         """
@@ -202,6 +202,7 @@ class HashMap:
                 bucket.is_tombstone = True
                 self._size -= 1
 
+
     def get_keys_and_values(self) -> DynamicArray:
         """
         Returns a dynamic array where each index contains a tuple of a key/value pair
@@ -212,7 +213,7 @@ class HashMap:
         for i in range(self.get_capacity()):
             bucket = self._buckets[i]
 
-            if bucket is not None and bucket.is_tombstone:
+            if bucket is not None and bucket.is_tombstone is False:
                 list.append((bucket.key, bucket.value))
         return list
 
@@ -222,7 +223,7 @@ class HashMap:
         table capacity.
         """
         for i in range(self.get_capacity()):
-            self._buckets[i] = None
+            self._buckets[i] = DynamicArray()
         self._size = 0
 
     def __iter__(self):
