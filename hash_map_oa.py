@@ -111,7 +111,6 @@ class HashMap:
                 bucket.value = value
                 return
 
-
     def resize_table(self, new_capacity: int) -> None:
         """
         Changes the capacity of the internal hash table. All existing key/value pairs
@@ -134,12 +133,16 @@ class HashMap:
             new_table.append(None)
 
         for i in range(self.get_capacity()):
-            # new_index = (index + (i ** 2)) % self.get_capacity()
             bucket = self._buckets[i]
             if bucket is not None and not bucket.is_tombstone:
-                hash = bucket.key
-                index = bucket.value
-                new_table.append(index)
+                hash = self._hash_function(bucket.key)
+                index = hash % new_capacity
+
+                for j in range(new_table.length()):
+                    new_index = (index + (j ** 2)) % new_capacity
+                    if new_table[new_index] is None:
+                        new_table[new_index] = bucket
+                        break
 
         self._buckets = new_table
         self._capacity = new_capacity
@@ -202,7 +205,6 @@ class HashMap:
                 bucket.is_tombstone = True
                 self._size -= 1
 
-
     def get_keys_and_values(self) -> DynamicArray:
         """
         Returns a dynamic array where each index contains a tuple of a key/value pair
@@ -223,7 +225,7 @@ class HashMap:
         table capacity.
         """
         for i in range(self.get_capacity()):
-            self._buckets[i] = DynamicArray()
+            self._buckets[i] = None
         self._size = 0
 
     def __iter__(self):
@@ -235,7 +237,7 @@ class HashMap:
         You can use either of the two models demonstrated in the Exploration - you can build the
         iterator functionality inside the HashMap class, or you can create a separate iterator class.
         """
-        self._bucket = 0
+        self.index = 0
         return self
 
     def __next__(self):
@@ -244,13 +246,15 @@ class HashMap:
         iterator. Implement this method in a similar way to the example in the Exploration:
         Encapsulation and Iterators. It will need to only iterate over active items.
         """
-        if self._bucket >= self.get_capacity():
+        try:
+            value = None
+            while value is None or value.is_tombstone is True:
+                value = self._buckets[self.index]
+                self.index += 1
+        except DynamicArrayException:
             raise StopIteration
+        return value
 
-        current_bucket = self._buckets.get_at_index(self._bucket)
-        if current_bucket is not None and not current_bucket.is_tombstone:
-            self._bucket = self._bucket + 1
-            return current_bucket.key, current_bucket.value
 
 
     # Use this when "manually" advancing an iterator
