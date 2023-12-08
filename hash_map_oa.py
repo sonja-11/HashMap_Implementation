@@ -128,6 +128,9 @@ class HashMap:
         if not self._is_prime(new_capacity):
             new_capacity = self._next_prime(new_capacity)
 
+        while float(self.get_size() / new_capacity) >= 0.5:
+            new_capacity = self._next_prime(new_capacity * 2)
+
         new_table = DynamicArray()
         for i in range(new_capacity):
             new_table.append(None)
@@ -144,8 +147,8 @@ class HashMap:
                         new_table[new_index] = bucket
                         break
 
-        self._buckets = new_table
         self._capacity = new_capacity
+        self._buckets = new_table
 
     def table_load(self) -> float:
         """
@@ -254,11 +257,6 @@ class HashMap:
         except DynamicArrayException:
             raise StopIteration
         return value
-
-
-
-    # Use this when "manually" advancing an iterator
-
 
 # ------------------- BASIC TESTING ---------------------------------------- #
 
