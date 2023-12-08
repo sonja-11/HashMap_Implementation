@@ -85,7 +85,6 @@ class HashMap:
         DO NOT CHANGE THIS METHOD IN ANY WAY
         """
         return self._capacity
-
     # ------------------------------------------------------------------ #
 
     def put(self, key: str, value: object) -> None:
