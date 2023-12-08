@@ -124,9 +124,9 @@ class HashMap:
         """
         if new_capacity < self.get_size():
             return
-
-        if not self._is_prime(new_capacity):
-            new_capacity = self._next_prime(new_capacity)
+        else:
+            if not self._is_prime(new_capacity):
+                new_capacity = self._next_prime(new_capacity)
 
         while float(self.get_size() / new_capacity) >= 0.5:
             new_capacity = self._next_prime(new_capacity * 2)
