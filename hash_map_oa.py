@@ -124,9 +124,9 @@ class HashMap:
         """
         if new_capacity < self.get_size():
             return
-        else:
-            if not self._is_prime(new_capacity):
-                new_capacity = self._next_prime(new_capacity)
+
+        if not self._is_prime(new_capacity):
+            new_capacity = self._next_prime(new_capacity)
 
         while float(self.get_size() / new_capacity) >= 0.5:
             new_capacity = self._next_prime(new_capacity * 2)
@@ -237,8 +237,6 @@ class HashMap:
         similar way to the example in the Exploration: Encapsulation and Iterators.
         You ARE permitted (and will need to) initialize a variable to track the iterator’s progress
         through the hash map’s contents.
-        You can use either of the two models demonstrated in the Exploration - you can build the
-        iterator functionality inside the HashMap class, or you can create a separate iterator class.
         """
         self.index = 0
         return self
@@ -246,8 +244,7 @@ class HashMap:
     def __next__(self):
         """
         Returns the next item in the hash map, based on the current location of the
-        iterator. Implement this method in a similar way to the example in the Exploration:
-        Encapsulation and Iterators. It will need to only iterate over active items.
+        iterator. It will need to only iterate over active items.
         """
         try:
             value = None
