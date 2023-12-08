@@ -224,7 +224,7 @@ class HashMap:
 
     def clear(self) -> None:
         """
-        This method clears the contents of the hash map. It does not change the underlying hash
+        Clears the contents of the hash map. It does not change the underlying hash
         table capacity.
         """
         for i in range(self.get_capacity()):

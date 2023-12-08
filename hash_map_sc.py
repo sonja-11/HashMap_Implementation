@@ -3,8 +3,8 @@
 # Course: CS261 - Data Structures
 # Assignment: 6
 # Due Date: 12/07/2023
-# Description: HashMap Implementation
-
+# Description: HashMap Implementation using a dynamic array to store the hash table and implementing chaining for
+#              collision resolution using a singly linked list.
 
 from a6_include import (DynamicArray, LinkedList,
                         hash_function_1, hash_function_2)
@@ -103,7 +103,6 @@ class HashMap:
         hash = self._hash_function(key)
         index = hash % self.get_capacity()
         bucket = self._buckets[index]
-
         for i in bucket:
             if i.key == key:
                 i.value = value
@@ -125,7 +124,8 @@ class HashMap:
         if new_capacity < 1:
             return
         else:
-            new_capacity = self._next_prime(new_capacity)
+            if not (self._is_prime(new_capacity)):
+                new_capacity = self._next_prime(new_capacity)
 
         new_table = DynamicArray()
         for i in range(new_capacity):
@@ -172,8 +172,8 @@ class HashMap:
 
     def contains_key(self, key: str) -> bool:
         """
-        Returns True if the given key is in the hash map, otherwise it returns False. An
-        empty hash map does not contain any keys.
+        Returns True if the given key is in the hash map, otherwise it returns False.
+        An empty hash map does not contain any keys.
         """
         hash = self._hash_function(key)
         index = hash % self.get_capacity()
