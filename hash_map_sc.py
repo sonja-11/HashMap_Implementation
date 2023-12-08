@@ -122,10 +122,9 @@ class HashMap:
         """
         if new_capacity < 1:
             return
-        elif not (self._is_prime(new_capacity)):
-            new_capacity = self._next_prime(new_capacity)
         else:
-            self._is_prime(new_capacity)
+            if not (self._is_prime(new_capacity)):
+                new_capacity = self._next_prime(new_capacity)
 
         new_table = DynamicArray()
         for i in range(new_capacity):
